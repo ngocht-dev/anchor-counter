@@ -6,8 +6,7 @@ import { expect } from "chai";
 describe("anchor-counter", () => {
   // Configure the client to use the local cluster.
   const provider = anchor.AnchorProvider.env();
-  console.log("provider: ", provider);
-  
+
   anchor.setProvider(provider);
 
   const program = anchor.workspace.AnchorCounter as Program<AnchorCounter>;
@@ -22,16 +21,14 @@ describe("anchor-counter", () => {
       .signers([counter])
       .rpc();
 
-    console.log("counter: ", counter.publicKey);
     const account = await program.account.counter.fetch(counter.publicKey);
-    console.log("account: ", JSON.stringify(account));
     expect(account.count.toNumber()).to.equal(0);
   });
 
   it("Incremented the count", async () => {
     const tx = await program.methods
       .increment()
-      .accounts({ counter: counter.publicKey, user: provider.wallet.publicKey })
+      .accounts({ counter: counter.publicKey })
       .rpc();
 
     const account = await program.account.counter.fetch(counter.publicKey);
